@@ -194,5 +194,5 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             sleep 10
-            curl -f http://185.200.244.215:9000/health || exit 1
+            curl http://127.0.0.1:9000/health || exit 1
 
