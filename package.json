@@ -1,13 +1,12 @@
 {
   "name": "marketplace-api",
   "version": "1.0.0",
-  "type": "module",
   "description": "Online Marketplace Platform API",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon -L -V",
     "build": "tsc",
-    "start": "node -r tsconfig-paths/register dist/server.js",
+    "start": "node -r ./tsconfig-paths-bootstrap.js dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:push": "prisma db push",
