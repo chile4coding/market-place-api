@@ -194,8 +194,5 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             sleep 10
-            curl -f http://$SERVER_IP:$PORT/health || exit 1
-        env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          PORT: ${{ secrets.PORT }}
+            curl -f http://185.200.244.215:9000/health || exit 1
 
