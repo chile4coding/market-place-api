@@ -40,8 +40,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -93,7 +93,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: npm ci
@@ -118,7 +118,7 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          source: "dist,package.json,package-lock.json,prisma"
+          source: "dist,package.json,package-lock.json,prisma,tsconfig-paths-bootstrap.js"
           target: ${{ secrets.SERVER_PATH }}
           overwrite: true
 
@@ -134,15 +134,18 @@ jobs:
             printf 'DATABASE_URL=%s\nREDIS_URL=%s\nJWT_EXPIRES_IN=%s\nJWT_REFRESH_EXPIRES_IN=%s\nJWT_PRIVATE_KEY=%s\nJWT_PUBLIC_KEY=%s\nSTRIPE_SECRET_KEY=%s\nSTRIPE_WEBHOOK_SECRET=%s\nAWS_S3_BUCKET=%s\nAWS_REGION=%s\nAWS_ACCESS_KEY_ID=%s\nAWS_SECRET_ACCESS_KEY=%s\nCLOUDINARY_CLOUD_NAME=%s\nCLOUDINARY_API_KEY=%s\nCLOUDINARY_API_SECRET=%s\nSENDGRID_API_KEY=%s\nEMAIL_FROM=%s\nGOOGLE_CLIENT_ID=%s\nGOOGLE_CLIENT_SECRET=%s\nNODE_ENV=production\nPORT=%s\nCORS_ORIGIN=%s\nMFA_APP_NAME=%s\nLOG_LEVEL=%s\n' "${{ secrets.DATABASE_URL }}" "${{ secrets.REDIS_URL }}" "${{ secrets.JWT_EXPIRES_IN }}" "${{ secrets.JWT_REFRESH_EXPIRES_IN }}" "${{ secrets.JWT_PRIVATE_KEY }}" "${{ secrets.JWT_PUBLIC_KEY }}" "${{ secrets.STRIPE_SECRET_KEY }}" "${{ secrets.STRIPE_WEBHOOK_SECRET }}" "${{ secrets.AWS_S3_BUCKET }}" "${{ secrets.AWS_REGION }}" "${{ secrets.AWS_ACCESS_KEY_ID }}" "${{ secrets.AWS_SECRET_ACCESS_KEY }}" "${{ secrets.CLOUDINARY_CLOUD_NAME }}" "${{ secrets.CLOUDINARY_API_KEY }}" "${{ secrets.CLOUDINARY_API_SECRET }}" "${{ secrets.SENDGRID_API_KEY }}" "${{ secrets.EMAIL_FROM }}" "${{ secrets.GOOGLE_CLIENT_ID }}" "${{ secrets.GOOGLE_CLIENT_SECRET }}" "${{ secrets.PORT }}" "${{ secrets.CORS_ORIGIN }}" "${{ secrets.MFA_APP_NAME }}" "${{ secrets.LOG_LEVEL }}" > .env
 
       - name: Install dependencies on server
+        timeout-minutes: 10
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
           port: ${{ secrets.SERVER_PORT }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
+          timeout: 600s
           script: |
             cd ${{ secrets.SERVER_PATH }}
-            npm install
+            npm install --only=production
+            npm install tsconfig-paths
             npx prisma generate
             npx prisma migrate deploy
 
@@ -154,9 +157,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            cd ${{ secrets.SERVER_PATH }}
-            pm2 delete marketplace-api 2>/dev/null || true
-            pm2 start dist/bootstrap.js --name marketplace-api --env production
+            cd ${{ secrets.SERVER_PATH }} && npm run start
 
       - name: Verify deployment
         uses: appleboy/ssh-action@v1.0.3
