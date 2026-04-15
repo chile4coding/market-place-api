@@ -1,5 +1,6 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import { config } from "./index";
+import path from "path";
 
 const options = {
   definition: {
@@ -20,7 +21,7 @@ const options = {
       },
       {
         url: `http://185.200.244.215:8000`,
-        description: "production server",
+        description: "Production server",
       },
     ],
     components: {
@@ -52,14 +53,16 @@ const options = {
         },
       },
     },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
+    security: [{ bearerAuth: [] }],
   },
-  apis: ["./src/routes/**/*.ts", "./src/modules/**/routes/**/*.ts"],
+  apis: [
+    // for local dev (ts files)
+    path.join(__dirname, "../src/routes/**/*.ts"),
+    path.join(__dirname, "../src/modules/**/routes/**/*.ts"),
+    // for production (compiled js files)
+    path.join(__dirname, "./routes/**/*.js"),
+    path.join(__dirname, "./modules/**/routes/**/*.js"),
+  ],
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const swaggerSpec: any = swaggerJsdoc(options);
