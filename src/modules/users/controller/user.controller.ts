@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { userService } from "../service/user.service";
 import { ApiResponse } from "@/types";
+import { File } from "formidable";
 
 const getProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -18,7 +19,11 @@ const getProfile = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const updateProfile = async (req: Request, res: Response, next: NextFunction) => {
+const updateProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user!;
     const profile = await userService.updateProfile(user.id, req.body);
@@ -34,20 +39,17 @@ const updateProfile = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-const uploadAvatar = async (req: Request, res: Response, next: NextFunction) => {
+const uploadAvatar = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user!;
-    const { image } = req.body;
+    const { image } = req.files as { image: File[] };
 
-    if (!image) {
-      return res.status(400).json({
-        success: false,
-        error: "VALIDATION_ERROR",
-        message: "Image is required",
-      });
-    }
-
-    const profile = await userService.uploadAvatar(user.id, image);
+    const file = Array.isArray(image) ? image[0] : image;
+    const profile = await userService.uploadAvatar(user.id, file);
 
     const response: ApiResponse = {
       success: true,
@@ -60,7 +62,11 @@ const uploadAvatar = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-const deleteAvatar = async (req: Request, res: Response, next: NextFunction) => {
+const deleteAvatar = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user!;
     const profile = await userService.deleteAvatar(user.id);
@@ -76,7 +82,11 @@ const deleteAvatar = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-const getAddresses = async (req: Request, res: Response, next: NextFunction) => {
+const getAddresses = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user!;
     const addresses = await userService.getAddresses(user.id);
@@ -109,7 +119,11 @@ const getAddress = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const createAddress = async (req: Request, res: Response, next: NextFunction) => {
+const createAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user!;
     const address = await userService.createAddress(user.id, req.body);
@@ -125,7 +139,11 @@ const createAddress = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-const updateAddress = async (req: Request, res: Response, next: NextFunction) => {
+const updateAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user!;
     const { id } = req.params;
@@ -142,7 +160,11 @@ const updateAddress = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-const deleteAddress = async (req: Request, res: Response, next: NextFunction) => {
+const deleteAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user!;
     const { id } = req.params;
@@ -159,7 +181,11 @@ const deleteAddress = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-const setDefaultAddress = async (req: Request, res: Response, next: NextFunction) => {
+const setDefaultAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user!;
     const { id } = req.params;

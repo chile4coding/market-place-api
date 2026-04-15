@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const updateProfileSchema = z.object({
   firstName: z.string().max(50).optional(),
@@ -7,7 +7,7 @@ export const updateProfileSchema = z.object({
 });
 
 export const uploadAvatarSchema = z.object({
-  image: z.string().min(1, 'Image is required'),
+  image: z.string().min(1, "Image is required"),
 });
 
 export const createAddressSchema = z.object({

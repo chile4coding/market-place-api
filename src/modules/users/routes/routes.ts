@@ -9,6 +9,9 @@ import {
   updateAddressSchema,
 } from "../schema/user.schema";
 
+import formidableMiddleware from "express-formidable";
+import { fileUpload } from "@/middleware/fileUpload";
+
 const router = Router();
 
 /**
@@ -57,7 +60,7 @@ router.put(
   "/profile",
   authenticate,
   validate(updateProfileSchema),
-  userController.updateProfile
+  userController.updateProfile,
 );
 
 /**
@@ -70,7 +73,7 @@ router.put(
  *       - bearerAuth: []
  *     requestBody:
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -78,18 +81,14 @@ router.put(
  *             properties:
  *               image:
  *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Avatar uploaded successfully
  *       401:
  *         description: Unauthorized
  */
-router.post(
-  "/avatar",
-  authenticate,
-  validate(uploadAvatarSchema),
-  userController.uploadAvatar
-);
+router.post("/avatar", authenticate, fileUpload, userController.uploadAvatar);
 
 /**
  * @swagger
@@ -165,7 +164,7 @@ router.post(
   "/addresses",
   authenticate,
   validate(createAddressSchema),
-  userController.createAddress
+  userController.createAddress,
 );
 
 /**
@@ -234,7 +233,7 @@ router.put(
   "/addresses/:id",
   authenticate,
   validate(updateAddressSchema),
-  userController.updateAddress
+  userController.updateAddress,
 );
 
 /**
@@ -279,6 +278,10 @@ router.delete("/addresses/:id", authenticate, userController.deleteAddress);
  *       401:
  *         description: Unauthorized
  */
-router.patch("/addresses/:id/default", authenticate, userController.setDefaultAddress);
+router.patch(
+  "/addresses/:id/default",
+  authenticate,
+  userController.setDefaultAddress,
+);
 
 export default router;

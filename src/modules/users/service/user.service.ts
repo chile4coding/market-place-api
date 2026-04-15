@@ -1,5 +1,5 @@
 import { userRepository } from "../repository/user.repository";
-import { uploadImage, deleteImage } from "@/config/cloudinary";
+import { uploadImage, deleteImage, getSignedUrl } from "@/config/cloudinary";
 import {
   createValidationError,
   createNotFoundError,
@@ -10,12 +10,18 @@ import {
   AddressParams,
   UpdateAddressParams,
 } from "../types/user.types";
+import { File } from "formidable";
 
 export const getProfile = async (userId: string) => {
   const profile = await userRepository.findProfileByUserId(userId);
 
   if (!profile) {
     throw createNotFoundError("Profile not found");
+  }
+
+  if (profile.avatarPublicId) {
+    const avatarUrl = getSignedUrl(profile.avatarPublicId);
+    return { ...profile, avatarUrl };
   }
 
   return profile;
@@ -41,7 +47,7 @@ export const updateProfile = async (
   return profile;
 };
 
-export const uploadAvatar = async (userId: string, imageBase64: string) => {
+export const uploadAvatar = async (userId: string, imageFile: File) => {
   const existingProfile = await userRepository.findProfileByUserId(userId);
 
   if (existingProfile?.avatarPublicId) {
@@ -52,17 +58,16 @@ export const uploadAvatar = async (userId: string, imageBase64: string) => {
     }
   }
 
-  const result = await uploadImage(
-    imageBase64,
-    `marketplace/avatars/${userId}`,
-  );
+  const result = await uploadImage(imageFile, `marketplace/avatars/${userId}`);
 
   const profile = await userRepository.updateProfile(userId, {
     avatarUrl: result.url,
     avatarPublicId: result.publicId,
   });
 
-  return profile;
+  const avatarUrl = getSignedUrl(result.publicId);
+
+  return { ...profile, avatarUrl };
 };
 
 export const deleteAvatar = async (userId: string) => {
@@ -85,7 +90,7 @@ export const deleteAvatar = async (userId: string) => {
     avatarPublicId: undefined,
   });
 
-  return updatedProfile;
+  return { ...updatedProfile, avatarUrl: undefined };
 };
 
 export const getAddresses = async (userId: string) => {
