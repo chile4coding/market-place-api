@@ -31,6 +31,8 @@ export interface JwtConfig {
 
 export type Role = 'ADMIN' | 'SELLER' | 'BUYER';
 
+export type Currency = 'NGN' | 'USD' | 'EUR' | 'GBP' | 'JPY' | 'CAD' | 'AUD' | 'ZAR' | 'INR' | 'CNY';
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;

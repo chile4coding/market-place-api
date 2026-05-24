@@ -11,6 +11,7 @@ import {
 } from "@/middleware/error";
 import authRoutes from "@/modules/auth/routes/routes";
 import userRoutes from "@/modules/users/routes/routes";
+import productRoutes from "@/modules/products/routes/routes";
 import swaggerRoutes from "@/modules/auth/routes/swagger.routes";
 
 export const createApp = (): Application => {
@@ -37,6 +38,7 @@ export const createApp = (): Application => {
   app.use("/api-docs", swaggerRoutes);
   app.use("/api/v1/auth", authRoutes);
   app.use("/api/v1/users", userRoutes);
+  app.use("/api/v1/products", productRoutes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

@@ -58,7 +58,7 @@ export const authenticate = async (
 
     next();
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -68,14 +68,15 @@ export const authorize = (...allowedRoles: Role[]) => {
       if (!req.user) {
         throw createUnauthorizedError("Not authenticated");
       }
+      console.log("this is the user: ",  req.user)
 
-      if (!allowedRoles.includes(req.user.role)) {
+      if (!allowedRoles.includes(req.user.role as Role)) {
         throw createForbiddenError("Insufficient permissions");
       }
 
       next();
     } catch (error) {
-      next(error);
+      next(error as Error);
     }
   };
 };
@@ -102,6 +103,6 @@ export const optionalAuth = (
 
     next();
   } catch (error) {
-    next();
+    next(error as Error);
   }
 };

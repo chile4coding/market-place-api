@@ -10,8 +10,10 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   const requestId = req.headers['x-request-id'] as string || uuidv4();
-  
-  if (err instanceof AppError) {
+
+  const isAppError = err instanceof AppError;
+
+  if (isAppError) {
     logger.warn({
       message: err.message,
       statusCode: err.statusCode,
@@ -20,7 +22,7 @@ export const errorHandler = (
       path: req.path,
       method: req.method,
     });
-    
+
     return res.status(err.statusCode).json({
       success: false,
       statusCode: err.statusCode,
@@ -46,6 +48,12 @@ export const errorHandler = (
     message: 'Internal server error',
     requestId,
   });
+};
+
+export const asyncErrorHandler = <T>(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<T>
+) => (req: Request, res: Response, next: NextFunction) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
 };
 
 export const requestIdMiddleware = (req: Request, res: Response, next: NextFunction) => {

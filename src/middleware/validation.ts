@@ -25,7 +25,7 @@ export const validate = (schema: ZodSchema) => {
       req.body = validationSchema(schema, req.body);
       next();
     } catch (error) {
-      next(error);
+      next(error as Error);
     }
   };
 };

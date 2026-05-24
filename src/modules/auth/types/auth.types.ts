@@ -11,3 +11,7 @@ export interface LoginParams {
   password: string;
   mfaToken?: string;
 }
+
+export interface ResendVerificationParams {
+  email: string;
+}

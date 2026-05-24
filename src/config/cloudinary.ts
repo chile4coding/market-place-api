@@ -12,6 +12,39 @@ cloudinary.config({
   api_secret: config.cloudinary.apiSecret,
 });
 
+const ALLOWED_IMAGE_TYPES = new Set([
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+  "image/bmp",
+  "image/tiff",
+]);
+
+const ALLOWED_EXTENSIONS = new Set([
+  ".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".bmp", ".tiff",
+]);
+
+const validateImageFile = (file: File) => {
+  const mimeType = (file as any).type || "";
+  const fileName = (file as any).originalFilename || (file as any).name || "";
+  const extension = fileName.toLowerCase().slice(fileName.lastIndexOf("."));
+
+  if (!ALLOWED_IMAGE_TYPES.has(mimeType)) {
+    throw new Error(
+      `Invalid file type "${mimeType || "unknown"}". Only images are allowed (${[...ALLOWED_IMAGE_TYPES].join(", ")}).`,
+    );
+  }
+
+  if (!ALLOWED_EXTENSIONS.has(extension)) {
+    throw new Error(
+      `Invalid file extension "${extension}". Allowed: ${[...ALLOWED_EXTENSIONS].join(", ")}.`,
+    );
+  }
+};
+
 export interface UploadResult {
   url: string;
   publicId: string;
@@ -21,6 +54,8 @@ export const uploadImage = async (
   file: File,
   folder: string = "marketplace",
 ): Promise<UploadResult> => {
+  validateImageFile(file);
+
   return new Promise((resolve, reject) => {
     const filePath = (file as any).path as string;
 

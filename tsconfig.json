@@ -2,32 +2,37 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "CommonJS",
-    "moduleResolution": "Node",
     "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./src",
+
+    // ✅ Speed: incremental builds
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+
+    // ✅ Speed: isolated file compilation
+    "isolatedModules": true,
+
+    // ✅ Correctness
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "typeRoots": ["./node_modules/@types", "./src/types"],
-    "types": ["jest", "node"],
-    "baseUrl": ".",
 
+    // ✅ Output: declarations only if you're publishing a package
+    "declaration": true,
+    "declarationMap": false,  // drop unless publishing
+    "sourceMap": true,
+
+    // ✅ Types: explicit, no typeRoots
+    "types": ["jest", "node"],
+
+   
     "paths": {
-      "@/*": ["./src/*"],
-      "@config/*": ["./src/config/*"],
-      "@modules/*": ["./src/modules/*"],
-      "@middleware/*": ["./src/middleware/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@types/*": ["./src/types/*"],
-      "@/jobs": ["./src/jobs/index.ts"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "tests"]
 }

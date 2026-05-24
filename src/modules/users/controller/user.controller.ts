@@ -15,7 +15,7 @@ const getProfile = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -35,7 +35,7 @@ const updateProfile = async (
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -58,7 +58,7 @@ const uploadAvatar = async (
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -78,7 +78,7 @@ const deleteAvatar = async (
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -98,7 +98,7 @@ const getAddresses = async (
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -115,7 +115,7 @@ const getAddress = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -135,7 +135,7 @@ const createAddress = async (
 
     res.status(201).json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -156,7 +156,7 @@ const updateAddress = async (
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -177,7 +177,7 @@ const deleteAddress = async (
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -198,7 +198,7 @@ const setDefaultAddress = async (
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 

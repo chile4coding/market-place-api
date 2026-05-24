@@ -13,7 +13,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 
     res.status(201).json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -28,7 +28,7 @@ const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -43,7 +43,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -58,7 +58,7 @@ const refresh = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -75,7 +75,7 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -94,7 +94,26 @@ const forgotPassword = async (
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
+  }
+};
+
+const resendVerificationEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await authService.resendVerificationEmail(req.body.email);
+
+    const response: ApiResponse = {
+      success: true,
+      data: result,
+    };
+
+    res.json(response);
+  } catch (error) {
+    next(error as Error);
   }
 };
 
@@ -116,7 +135,7 @@ const resetPassword = async (
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -132,7 +151,7 @@ const setupMfa = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -148,7 +167,7 @@ const verifyMfa = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
@@ -164,13 +183,14 @@ const disableMfa = async (req: Request, res: Response, next: NextFunction) => {
 
     res.json(response);
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 };
 
 export const authController = {
   register,
   verifyEmail,
+  resendVerificationEmail,
   login,
   refresh,
   logout,

@@ -200,6 +200,24 @@ export const forgotPassword = async (email: string) => {
   return { message: "If the email exists, a reset link will be sent" };
 };
 
+export const resendVerificationEmail = async (email: string) => {
+  const user = await authRepository.findUserByEmail(email);
+  if (!user || user.isVerified) {
+    return { message: "If the email exists and is unverified, a verification link will be sent" };
+  }
+
+  const verificationToken = passwordService.generateRandomToken();
+  await authRepository.createEmailVerification(email, verificationToken);
+
+  await addEmailJob({
+    type: "verification",
+    to: email,
+    data: { token: verificationToken },
+  });
+
+  return { message: "If the email exists and is unverified, a verification link will be sent" };
+};
+
 export const resetPassword = async (token: string, newPassword: string) => {
   const reset = await authRepository.findPasswordReset(token);
   if (!reset) {
@@ -340,6 +358,7 @@ export const handleGoogleAuth = async (userData: {
 export const authService = {
   register,
   verifyEmail,
+  resendVerificationEmail,
   login,
   refresh,
   logout,

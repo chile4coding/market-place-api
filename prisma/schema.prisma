@@ -36,6 +36,19 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum Currency {
+  NGN // Nigerian Naira
+  USD // US Dollar
+  EUR // Euro
+  GBP // British Pound
+  JPY // Japanese Yen
+  CAD // Canadian Dollar
+  AUD // Australian Dollar
+  ZAR // South African Rand
+  INR // Indian Rupee
+  CNY // Chinese Yuan
+}
+
 model User {
   id            String         @id @default(uuid())
   email         String         @unique
@@ -119,6 +132,7 @@ model Product {
   slug        String         @unique
   description String?
   price       Decimal        @db.Decimal(10, 2)
+  currency    Currency       @default(NGN)
   stock       Int            @default(0)
   status      ProductStatus  @default(DRAFT)
   createdAt   DateTime       @default(now()) @map("created_at")
@@ -135,6 +149,7 @@ model Product {
   @@index([status])
   @@index([price])
   @@index([createdAt])
+  @@index([currency])
   @@map("products")
 }
 

@@ -8,6 +8,7 @@ import {
   loginSchema,
   verifyEmailSchema,
   forgotPasswordSchema,
+  resendVerificationSchema,
   resetPasswordSchema,
   refreshTokenSchema,
   mfaVerifySchema,
@@ -82,6 +83,38 @@ router.post(
   validate(verifyEmailSchema),
   authController.verifyEmail,
 );
+
+/**
+ * @swagger
+ * /api/v1/auth/resend-verification-email:
+ *   post:
+ *     summary: Resend email verification link
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       200:
+ *         description: Verification email sent (or generic response if email not found/already verified)
+ *       429:
+ *         description: Too many requests
+ */
+router.post(
+  "/resend-verification-email",
+  authLimiter,
+  validate(resendVerificationSchema),
+  authController.resendVerificationEmail,
+);
+
 
 /**
  * @swagger
